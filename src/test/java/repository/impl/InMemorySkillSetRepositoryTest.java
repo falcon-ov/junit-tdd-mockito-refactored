@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestInMemorySkillSetRepository {
+public class InMemorySkillSetRepositoryTest {
     private InMemorySkillSetRepository skillSetRepository;
     Person person;
     Person diffPerson;

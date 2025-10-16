@@ -71,4 +71,14 @@ public class SkillTest {
     public void testHashCodeDifferentObjects() {
         assertNotEquals(original.hashCode(), different.hashCode());
     }
+
+    @Test
+    public void testIsValid(){
+        assertTrue(original.isValid());
+    }
+
+    @Test
+    public void testIsInvalid(){
+        assertFalse(new Skill(null, null).isValid());
+    }
 }

@@ -15,8 +15,8 @@ public class SkillSetService {
         this.skillSetrepository = skillSetrepository;
     }
 
-    public void addSkillSet(Person person, Skill skill, int level){
-        SkillSet skillSet = new SkillSet(person, skill, level);
+    public void addSkillSet(Person person, Skill skill, int level, int yearsExperience){
+        SkillSet skillSet = new SkillSet(person, skill, level, yearsExperience);
         skillSetrepository.add(skillSet);
     }
 

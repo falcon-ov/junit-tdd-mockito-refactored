@@ -27,10 +27,10 @@ public class SkillSetTest {
         skill = new Skill("Java", "IT");
         diffSkill = new Skill("Golang", "IT");
 
-        original = new SkillSet(person, skill, 10);
-        copy1 = new SkillSet(person, skill,10);
-        copy2 = new SkillSet(person, skill,10);
-        different = new SkillSet(diffPerson, diffSkill,5);
+        original = new SkillSet(person, skill, 10, 5);
+        copy1 = new SkillSet(person, skill,10, 5);
+        copy2 = new SkillSet(person, skill,10, 5);
+        different = new SkillSet(diffPerson, diffSkill,5, 2);
     }
 
     @Test

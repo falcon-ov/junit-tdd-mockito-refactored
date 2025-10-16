@@ -30,14 +30,14 @@ public class SkillSetServiceTest {
     public void beforeEach(){
         person = new Person("Name", "Surname", "email@gmail.com");
         skill = new Skill("Java", "IT");
-        skillSet = new SkillSet(person, skill, 10);
+        skillSet = new SkillSet(person, skill, 10, 5);
         mockRepo = Mockito.mock(SkillSetRepository.class);
         service = new SkillSetService(mockRepo);
     }
 
     @Test
     public void testAddSkillSet(){
-        service.addSkillSet(person, skill, 10);
+        service.addSkillSet(person, skill, 10, 5);
 
         verify(mockRepo, times(1)).add(any(SkillSet.class));
     }

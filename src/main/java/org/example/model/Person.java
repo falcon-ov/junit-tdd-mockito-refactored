@@ -7,10 +7,12 @@ public class Person {
     private String surname;
     private String email;
 
+
     public Person(String name, String surname, String email){
         this.name = name;
         this.surname = surname;
         this.email = email;
+
     }
     public String getName() {
         return name;
@@ -44,5 +46,11 @@ public class Person {
     @Override
     public int hashCode() {
         return Objects.hash(name, surname, email);
+    }
+
+    public boolean isValid() {
+        return name != null && !name.isEmpty()
+                && surname != null && !surname.isEmpty()
+                && email != null && email.contains("@");
     }
 }

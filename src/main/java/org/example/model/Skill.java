@@ -36,4 +36,9 @@ public class Skill {
         return Objects.hash(name, domain);
     }
 
+    public boolean isValid() {
+        return name != null && !name.isEmpty()
+                && domain != null && !domain.isEmpty();
+    }
+
 }

@@ -29,9 +29,9 @@ public class InMemorySkillSetRepositoryTest {
         diffPerson= new Person("DiffName", "DiffSurname","Diffemail@gmail.com");
         skill = new Skill("Java","IT");
         diffSkill = new Skill("Golang","IT");
-        skillSet = new SkillSet(person, skill, 10);
-        skillSetDiffSkill = new SkillSet(person, diffSkill, 10);
-        skillSetDiffPerson = new SkillSet(diffPerson, skill, 10);
+        skillSet = new SkillSet(person, skill, 10, 5);
+        skillSetDiffSkill = new SkillSet(person, diffSkill, 10, 5);
+        skillSetDiffPerson = new SkillSet(diffPerson, skill, 10, 5);
     }
 
     @Test

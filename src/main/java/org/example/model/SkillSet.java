@@ -60,18 +60,4 @@ public class SkillSet {
         return Objects.hash(person, skill, level);
     }
 
-    public boolean isValid() {
-        return level > 0 && level <= 10
-                && person != null
-                && skill != null
-                && yearsExperience >= 0;
-    }
-
-    public double getRating() {
-        return level * 10 * (yearsExperience / 10 + 0.65);
-    }
-
-    public boolean isGood() {
-        return getRating() >= 50;
-    }
 }

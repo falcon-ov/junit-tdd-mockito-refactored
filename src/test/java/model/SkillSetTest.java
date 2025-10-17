@@ -82,23 +82,4 @@ public class SkillSetTest {
         assertNotEquals(original.hashCode(), different.hashCode());
     }
 
-    @Test
-    public void testIsValid(){
-        assertTrue(original.isValid());
-    }
-
-    @Test
-    public void testIsInvalid(){
-        assertFalse(new SkillSet(null, null, -10, -10).isValid());
-    }
-
-    @Test
-    public void testGetRating(){
-        assertEquals(original.getLevel() * 10 * (original.getYearsExperience() / 10 + 0.65), original.getRating());
-    }
-
-    @Test
-    public void testIsGood(){
-        assertTrue(original.isGood());
-    }
 }

@@ -48,9 +48,4 @@ public class Person {
         return Objects.hash(name, surname, email);
     }
 
-    public boolean isValid() {
-        return name != null && !name.isEmpty()
-                && surname != null && !surname.isEmpty()
-                && email != null && email.contains("@");
-    }
 }

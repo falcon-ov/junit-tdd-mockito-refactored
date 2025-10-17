@@ -69,13 +69,4 @@ public class PersonTest {
         assertNotEquals(original.hashCode(), different.hashCode());
     }
 
-    @Test
-    public void testIsValid(){
-        assertTrue(original.isValid());
-    }
-
-    @Test
-    public void testIsInvalid(){
-        assertFalse(new Person(null, null,null).isValid());
-    }
 }

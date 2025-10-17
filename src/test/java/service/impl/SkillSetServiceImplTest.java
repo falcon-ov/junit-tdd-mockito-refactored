@@ -1,17 +1,16 @@
-package service;
+package service.impl;
 
 import org.example.model.Person;
 import org.example.model.Skill;
 import org.example.model.SkillSet;
 import org.example.repository.SkillSetRepository;
 import org.example.service.SkillSetService;
+import org.example.service.impl.SkillSetServiceImpl;
+import org.example.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.crypto.interfaces.PBEKey;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class SkillSetServiceTest {
+public class SkillSetServiceImplTest {
     Person person;
     Skill skill;
     SkillSet skillSet;
     SkillSetRepository mockRepo;
+    Validator<SkillSet> mockValidator;
     SkillSetService service;
 
     @BeforeEach
@@ -32,12 +32,13 @@ public class SkillSetServiceTest {
         skill = new Skill("Java", "IT");
         skillSet = new SkillSet(person, skill, 10, 5);
         mockRepo = Mockito.mock(SkillSetRepository.class);
-        service = new SkillSetService(mockRepo);
+        mockValidator = Mockito.mock(Validator.class);
+        service = new SkillSetServiceImpl(mockRepo, mockValidator);
     }
 
     @Test
     public void testAddSkillSet(){
-        service.addSkillSet(person, skill, 10, 5);
+        service.addSkillSet(skillSet);
 
         verify(mockRepo, times(1)).add(any(SkillSet.class));
     }

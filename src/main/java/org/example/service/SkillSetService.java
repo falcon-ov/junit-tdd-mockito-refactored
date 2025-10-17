@@ -8,30 +8,9 @@ import org.example.repository.SkillSetRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class SkillSetService {
-    private SkillSetRepository skillSetrepository;
-
-    public SkillSetService(SkillSetRepository skillSetrepository) {
-        this.skillSetrepository = skillSetrepository;
-    }
-
-    public void addSkillSet(Person person, Skill skill, int level, int yearsExperience){
-        SkillSet skillSet = new SkillSet(person, skill, level, yearsExperience);
-        skillSetrepository.add(skillSet);
-    }
-
-    public Optional<Integer> getSkillLevel(Person person, Skill skill){
-        return skillSetrepository.findByPersonAndSkill(person, skill).map(SkillSet::getLevel);
-    }
-
-    public List<SkillSet> getAllSkills(Person person){
-        return skillSetrepository.findByPerson(person);
-    }
-
-    public void removeSkill(Person person, Skill skill){
-        skillSetrepository
-                .findByPersonAndSkill(person, skill)
-                .ifPresent(skillSetrepository::remove);
-    }
-
+public interface SkillSetService {
+    public void addSkillSet(SkillSet skillSet);
+    public Optional<Integer> getSkillLevel(Person person, Skill skill);
+    public List<SkillSet> getAllSkills(Person person);
+    public void removeSkill(Person person, Skill skill);
 }

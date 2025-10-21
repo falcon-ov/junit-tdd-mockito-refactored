@@ -21,23 +21,23 @@ public class Main {
 //        Connection connection = DatabaseConnection.getConnection();
 //        SkillSetDAO dao = new SkillSetDAO(connection);
 //        SkillSetRepository repository = new DatabaseSkillSetRepository(dao);
-        Validator<SkillSet> validator = new SkillSetValidator();
-        SkillSetRepository repository = new InMemorySkillSetRepository();
-        SkillSetService service = new SkillSetServiceImpl(repository, validator);
-
-        Person person = new Person("Name","Surname","email@gmail.com");
-        service.addSkillSet(new SkillSet(person, new Skill("Java", "IT"), 10, 5));
-
-        for(SkillSet skillSet : service.getAllSkills(person)){
-            System.out.println("-".repeat(40));
-            System.out.println(skillSet.getPerson().getName());
-            System.out.println(skillSet.getPerson().getSurname());
-            System.out.println(skillSet.getPerson().getEmail());
-            System.out.println(skillSet.getSkill().getName());
-            System.out.println(skillSet.getSkill().getDomain());
-            System.out.println(skillSet.getLevel());
-            System.out.println(skillSet.getYearsExperience());
-            System.out.println("-".repeat(40));
-        }
+//        Validator<SkillSet> validator = new SkillSetValidator();
+//        SkillSetRepository repository = new InMemorySkillSetRepository();
+//        SkillSetService service = new SkillSetServiceImpl(repository, validator);
+//
+//        Person person = new Person("Name","Surname","email@gmail.com");
+//        service.addSkillSet(new SkillSet(person, new Skill("Java", "IT"), 10, 5));
+//
+//        for(SkillSet skillSet : service.getAllSkills(person)){
+//            System.out.println("-".repeat(40));
+//            System.out.println(skillSet.getPerson().getName());
+//            System.out.println(skillSet.getPerson().getSurname());
+//            System.out.println(skillSet.getPerson().getEmail());
+//            System.out.println(skillSet.getSkill().getName());
+//            System.out.println(skillSet.getSkill().getDomain());
+//            System.out.println(skillSet.getLevel());
+//            System.out.println(skillSet.getYearsExperience());
+//            System.out.println("-".repeat(40));
+//        }
     }
 }

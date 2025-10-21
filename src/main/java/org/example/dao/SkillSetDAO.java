@@ -12,109 +12,125 @@ import java.util.Optional;
 public class SkillSetDAO {
     private final Connection connection;
 
+    private static final String TABLE = "skillsets";
+    private static final String COL_PERSON_NAME = "person_name";
+    private static final String COL_PERSON_SURNAME = "person_surname";
+    private static final String COL_EMAIL = "email";
+    private static final String COL_SKILL_NAME = "skill_name";
+    private static final String COL_SKILL_DOMAIN = "skill_domain";
+    private static final String COL_LEVEL = "level";
+    private static final String COL_YEARS_EXPERIENCE = "years_experience";
+
     public SkillSetDAO(Connection connection) {
         this.connection = connection;
     }
 
     public void insert(SkillSet skillSet) throws SQLException {
-        String sql = "INSERT INTO skillsets " +
-                "(person_name, person_surname, email, skill_name, skill_domain, level, years_experience) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, skillSet.getPerson().getName());
-            ps.setString(2, skillSet.getPerson().getSurname());
-            ps.setString(3, skillSet.getPerson().getEmail());
-            ps.setString(4, skillSet.getSkill().getName());
-            ps.setString(5, skillSet.getSkill().getDomain());
-            ps.setInt(6, skillSet.getLevel());
-            ps.setInt(7, skillSet.getYearsExperience());
-            ps.executeUpdate();
+        String sql = "INSERT INTO " + TABLE + " (" +
+                COL_PERSON_NAME + ", " + COL_PERSON_SURNAME + ", " + COL_EMAIL + ", " +
+                COL_SKILL_NAME + ", " + COL_SKILL_DOMAIN + ", " + COL_LEVEL + ", " + COL_YEARS_EXPERIENCE +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setPersonParams(preparedStatement, skillSet.getPerson(), 1);
+            setSkillParams(preparedStatement, skillSet.getSkill(), 4);
+            preparedStatement.setInt(6, skillSet.getLevel());
+            preparedStatement.setInt(7, skillSet.getYearsExperience());
+            preparedStatement.executeUpdate();
         }
     }
 
     public List<SkillSet> selectAll() throws SQLException {
-        List<SkillSet> result = new ArrayList<>();
-        String sql = "SELECT * FROM skillsets";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Person person = new Person(rs.getString("person_name"),
-                        rs.getString("person_surname"),
-                        rs.getString("email"));
-                Skill skill = new Skill(rs.getString("skill_name"),
-                        rs.getString("skill_domain"));
-                int level = rs.getInt("level");
-                int years = rs.getInt("years_experience");
-                result.add(new SkillSet(person, skill, level, years));
-            }
+        String sql = "SELECT * FROM " + TABLE;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            return mapRows(resultSet);
         }
-        return result;
     }
 
     public List<SkillSet> selectByPerson(Person person) throws SQLException {
-        List<SkillSet> result = new ArrayList<>();
-        String sql = "SELECT * FROM skillsets WHERE person_name = ? AND person_surname = ? AND email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, person.getName());
-            ps.setString(2, person.getSurname());
-            ps.setString(3, person.getEmail());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Skill skill = new Skill(rs.getString("skill_name"), rs.getString("skill_domain"));
-                int level = rs.getInt("level");
-                int years = rs.getInt("years_experience");
-                result.add(new SkillSet(person, skill, level, years));
+        String sql = "SELECT * FROM " + TABLE + " WHERE " +
+                COL_PERSON_NAME + " = ? AND " + COL_PERSON_SURNAME + " = ? AND " + COL_EMAIL + " = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setPersonParams(preparedStatement, person, 1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return mapRows(resultSet);
             }
         }
-        return result;
     }
 
     public List<SkillSet> selectBySkill(Skill skill) throws SQLException {
-        List<SkillSet> result = new ArrayList<>();
-        String sql = "SELECT * FROM skillsets WHERE skill_name = ? AND skill_domain = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, skill.getName());
-            ps.setString(2, skill.getDomain());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Person person = new Person(rs.getString("person_name"),
-                        rs.getString("person_surname"),
-                        rs.getString("email"));
-                int level = rs.getInt("level");
-                int years = rs.getInt("years_experience");
-                result.add(new SkillSet(person, skill, level, years));
+        String sql = "SELECT * FROM " + TABLE + " WHERE " +
+                COL_SKILL_NAME + " = ? AND " + COL_SKILL_DOMAIN + " = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setSkillParams(preparedStatement, skill, 1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return mapRows(resultSet);
             }
         }
-        return result;
     }
 
     public Optional<SkillSet> selectByPersonAndSkill(Person person, Skill skill) throws SQLException {
-        String sql = "SELECT * FROM skillsets WHERE person_name = ? AND person_surname = ? AND email = ? AND skill_name = ? AND skill_domain = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, person.getName());
-            ps.setString(2, person.getSurname());
-            ps.setString(3, person.getEmail());
-            ps.setString(4, skill.getName());
-            ps.setString(5, skill.getDomain());
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                int level = rs.getInt("level");
-                int years = rs.getInt("years_experience");
-                return Optional.of(new SkillSet(person, skill, level, years));
+        String sql = "SELECT * FROM " + TABLE + " WHERE " +
+                COL_PERSON_NAME + " = ? AND " + COL_PERSON_SURNAME + " = ? AND " + COL_EMAIL + " = ?" +
+                " AND " + COL_SKILL_NAME + " = ? AND " + COL_SKILL_DOMAIN + " = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setPersonParams(preparedStatement, person, 1);
+            setSkillParams(preparedStatement, skill, 4);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<SkillSet> skillSets = mapRows(resultSet);
+                return skillSets.isEmpty() ? Optional.empty() : Optional.of(skillSets.get(0));
             }
         }
-        return Optional.empty();
     }
 
     public void delete(SkillSet skillSet) throws SQLException {
-        String sql = "DELETE FROM skillsets WHERE person_name = ? AND person_surname = ? AND email = ? AND skill_name = ? AND skill_domain = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, skillSet.getPerson().getName());
-            ps.setString(2, skillSet.getPerson().getSurname());
-            ps.setString(3, skillSet.getPerson().getEmail());
-            ps.setString(4, skillSet.getSkill().getName());
-            ps.setString(5, skillSet.getSkill().getDomain());
-            ps.executeUpdate();
+        String sql = "DELETE FROM " + TABLE + " WHERE " +
+                COL_PERSON_NAME + " = ? AND " + COL_PERSON_SURNAME + " = ? AND " + COL_EMAIL + " = ?" +
+                " AND " + COL_SKILL_NAME + " = ? AND " + COL_SKILL_DOMAIN + " = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setPersonParams(preparedStatement, skillSet.getPerson(), 1);
+            setSkillParams(preparedStatement, skillSet.getSkill(), 4);
+            preparedStatement.executeUpdate();
         }
+    }
+
+    private void setPersonParams(PreparedStatement preparedStatement, Person person, int startIndex) throws SQLException {
+        preparedStatement.setString(startIndex, person.getName());
+        preparedStatement.setString(startIndex + 1, person.getSurname());
+        preparedStatement.setString(startIndex + 2, person.getEmail());
+    }
+
+    private void setSkillParams(PreparedStatement preparedStatement, Skill skill, int startIndex) throws SQLException {
+        preparedStatement.setString(startIndex, skill.getName());
+        preparedStatement.setString(startIndex + 1, skill.getDomain());
+    }
+
+    private SkillSet mapRow(ResultSet resultSet) throws SQLException {
+        Person person = new Person(
+                resultSet.getString(COL_PERSON_NAME),
+                resultSet.getString(COL_PERSON_SURNAME),
+                resultSet.getString(COL_EMAIL)
+        );
+        Skill skill = new Skill(
+                resultSet.getString(COL_SKILL_NAME),
+                resultSet.getString(COL_SKILL_DOMAIN)
+        );
+        int level = resultSet.getInt(COL_LEVEL);
+        int years = resultSet.getInt(COL_YEARS_EXPERIENCE);
+        return new SkillSet(person, skill, level, years);
+    }
+
+    private List<SkillSet> mapRows(ResultSet resultSet) throws SQLException {
+        List<SkillSet> skillSets = new ArrayList<>();
+        while (resultSet.next()) {
+            skillSets.add(mapRow(resultSet));
+        }
+        return skillSets;
     }
 }

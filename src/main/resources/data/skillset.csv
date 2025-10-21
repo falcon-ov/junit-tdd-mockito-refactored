@@ -1,0 +1,4 @@
+firstName;lastName;email;skillName;skillCategory;level;years
+Ivan;Ivanov;ivan@test.com;Java;Programming;5;3
+Petr;Petrov;petr@test.com;Python;Programming;4;2
+Anna;Smirnova;anna@test.com;C++;Programming;6;6

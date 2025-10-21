@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import org.example.io.CsvSkillSetReader;
 import org.example.model.Person;
 import org.example.model.Skill;
 import org.example.model.SkillSet;
@@ -48,5 +49,14 @@ public class SkillSetServiceImpl implements SkillSetService {
 
     public boolean isGood(SkillSet skillSet) {
         return getRating(skillSet) >= 50;
+    }
+
+    public void importFromCsv() {
+        CsvSkillSetReader reader = new CsvSkillSetReader();
+        List<SkillSet> skillSets = reader.readAll();
+
+        for (SkillSet s : skillSets) {
+            addSkillSet(s);
+        }
     }
 }

@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SkillSetService {
-    public void addSkillSet(SkillSet skillSet);
-    public Optional<Integer> getSkillLevel(Person person, Skill skill);
-    public List<SkillSet> getAllSkills(Person person);
-    public void removeSkill(Person person, Skill skill);
+    void addSkillSet(SkillSet skillSet);
+    Optional<Integer> getSkillLevel(Person person, Skill skill);
+    List<SkillSet> getAllSkills(Person person);
+    void removeSkill(Person person, Skill skill);
+    double getRating(SkillSet skillSet);
+    boolean isGood(SkillSet skillSet);
+    void importFromCsv();
 }

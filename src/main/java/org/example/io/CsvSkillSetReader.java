@@ -5,50 +5,56 @@ import org.example.model.Skill;
 import org.example.model.SkillSet;
 import org.example.validation.SkillSetValidator;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.InputStream;
 import java.util.*;
 
 public class CsvSkillSetReader implements Reader<SkillSet> {
+
+    private static final String DELIMITER = ";";
+    private static final String DEFAULT_FILE_PATH = "data/skillset.csv";
 
     private final SkillSetValidator validator;
     private final boolean skipHeader;
 
     public CsvSkillSetReader() {
-        this(new SkillSetValidator(), true);
-    }
-
-    public CsvSkillSetReader(SkillSetValidator validator, boolean skipHeader) {
-        this.validator = validator;
-        this.skipHeader = skipHeader;
+        this.validator = new SkillSetValidator();
+        this.skipHeader = true;
     }
 
     @Override
-    public List<SkillSet> readAll(String filePath) {
+    public List<SkillSet> readAll() {
         try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath));
-            return parseLines(lines);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read CSV: " + filePath, e);
+            // читаем CSV из resources по константе
+            InputStream is = getClass().getClassLoader().getResourceAsStream(DEFAULT_FILE_PATH);
+            if (is == null) {
+                throw new RuntimeException("CSV file not found in resources: " + DEFAULT_FILE_PATH);
+            }
+
+            List<String> lines = new ArrayList<>();
+            try (Scanner scanner = new Scanner(is)) {
+                while (scanner.hasNextLine()) {
+                    lines.add(scanner.nextLine());
+                }
+            }
+
+            List<SkillSet> result = new ArrayList<>();
+            int start = skipHeader ? 1 : 0;
+
+            for (int i = start; i < lines.size(); i++) {
+                String line = lines.get(i).trim();
+                if (line.isEmpty()) continue;
+                result.add(parseLine(line, i + 1));
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read CSV from resources: " + DEFAULT_FILE_PATH, e);
         }
     }
 
-    private List<SkillSet> parseLines(List<String> lines) {
-        List<SkillSet> result = new ArrayList<>();
-        int start = skipHeader ? 1 : 0;
-
-        for (int i = start; i < lines.size(); i++) {
-            String line = lines.get(i).trim();
-            if (line.isEmpty()) continue;
-
-            SkillSet skillSet = parseLine(line, i + 1);
-            result.add(skillSet);
-        }
-        return result;
-    }
-
-    private SkillSet parseLine(String line, int lineNum) {
-        String[] parts = line.split(",", -1);
+    public SkillSet parseLine(String line, int lineNum) {
+        String[] parts = line.split(DELIMITER, -1);
 
         if (parts.length != 7) {
             throw new IllegalArgumentException(
@@ -57,21 +63,13 @@ public class CsvSkillSetReader implements Reader<SkillSet> {
         }
 
         try {
-            Person person = new Person(
-                    parts[0].trim(),
-                    parts[1].trim(),
-                    parts[2].trim()
-            );
-            Skill skill = new Skill(
-                    parts[3].trim(),
-                    parts[4].trim()
-            );
+            Person person = new Person(parts[0].trim(), parts[1].trim(), parts[2].trim());
+            Skill skill = new Skill(parts[3].trim(), parts[4].trim());
             int level = Integer.parseInt(parts[5].trim());
             int years = Integer.parseInt(parts[6].trim());
 
             SkillSet skillSet = new SkillSet(person, skill, level, years);
 
-            // Валидация
             List<String> errors = validator.validate(skillSet);
             if (!errors.isEmpty()) {
                 throw new IllegalArgumentException(

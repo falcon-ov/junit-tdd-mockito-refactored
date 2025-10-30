@@ -40,7 +40,6 @@ class SkillSetDAOTest {
         when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
     }
 
-    // ------------------ тесты ------------------
 
     @Test
     void testInsert() throws SQLException {
